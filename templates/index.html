@@ -1,0 +1,46 @@
+<!DOCTYPE = html>
+<html>
+<head>
+  <title>Data Browser</title>
+</head>
+<body>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="/static/js/script.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <h1> Data Browser </h1>
+    <p> This is a simple data browser that allows you to view data in a table. </p>
+    <label for="select_ind">select individual:</label>
+    <select id="select_ind"></select>
+
+    <div id='allDayActivity'></div>
+    <div class='tab'>
+        <button class="tablinks" id ="view_acc_plot">View time point</button>
+        <button class="tablinks" id = "view_compare_labels">Compre labels</button>
+    </div>
+    <div id='acc_plot' class='tabcontent'></div>
+    <div id='compare_labels' class='tabcontent'>
+        <div id='select_label'>
+        </div>
+        <div id='compare_num'>
+            <label for='compare_num'>Number of labels to compare:</label>
+            <input type='text' id='compare_num_input' placeholder='1'>
+        </div>
+        <div id='is_smooth'>
+            <label for='is_smooth'>Smooth data:</label>
+            <select id='is_smooth_input'>
+                <option value='True'>True</option>
+                <option value='False'>False</option>
+            </select>
+        </div>
+        <button id='compare_render'>render</button>
+        <div id='compare_plot'></div>
+    </div>
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 24px;">
+        Loading...
+    </div>
+</div>
+</body>
+</html>
+```

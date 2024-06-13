@@ -1,0 +1,79 @@
+ 65         gp[label]['X'] = [X[i] for i in index]
+ 64         gp[label]['Y'] = [Y[i] for i in index]
+ 63         gp[label]['T'] = [T[i] for i in index]
+ 62     session['gp'] = gp
+ 61     session['X'] = X
+ 60     session['Y'] = Y
+ 59     session['T'] = T
+ 58     session['labels'] = labels
+ 57
+ 56 @app.route('/get24hr')
+ 55 def get_24hr_data():
+ 54     indv = request.args.get('param1')
+ 53     files = glob(file_dir + indv + '*.pkl')
+ 52     # match the indv with the file name
+ 51     matching_files = [f for f in files if indv in f]
+ 50     if len(matching_files) == 0:
+ 49         print(f'No data found for {indv}')
+ 48         return 'No data found for this individual'
+ 47     elif len(matching_files) > 1:
+ 46         print(f'Multiple files found for {indv}')
+ 45         return 'Multiple files found for this individual'
+ 44     matching_file = matching_files[0]
+ 43     load_data(matching_file)
+ 42     T = session['T']
+ 41     Y = list(session['Y'])
+ 40     df = pd.DataFrame({'T': T, 'Y': Y, 'value': 1, 'id': list(range(len(T)))})
+ 39     df = df.sort_values(by='T')
+ 38     fig = px.bar(df, x='T', y='value', color='Y', labels = {'Y': 'Activity'}, custom_data = 'id')
+ 37     fig.update_yaxes(visible=False, showticklabels=False)
+ 36     fig.update_traces(marker_line_width=0)  # Bar width is very narrow
+ 35     fig.update_layout(hovermode='closest')
+ 34     fig_json = fig.to_json()
+ 33     # T_str = [str(t) for t in T]
+ 32     # print(T_str)
+ 31     return fig_json
+ 30
+ 29
+ 28 @app.route('/plotAcc')
+ 27 def plot_data():
+ 26     param1 = request.args.get('param1')
+ 25     print(param1)
+ 24     index =  int(request.args.get('param1'))
+ 23     Y = session['Y']
+ 22     print(Y[index])
+ 21     T = session['T']
+ 20     print(T[index])
+ 19     if 'X' not in session:
+ 18         load_data()
+ 17     X = session['X']
+ 16     x = [ entry[0] for entry in X[index] ]
+ 15     y = [ entry[1] for entry in X[index] ]
+ 14     z = [ entry[2] for entry in X[index] ]
+ 13     inds = [i for i in range(len(x))]
+ 12     traex = go.Scatter(x=inds, y=x, mode = 'lines', name = 'x')
+ 11     traey = go.Scatter(x=inds, y=y, mode = 'lines', name = 'y')
+ 10     traez = go.Scatter(x=inds, y=z, mode = 'lines', name = 'z')
+  9     plotly_data = [traex, traey, traez]
+  8     fig = go.Figure(data=plotly_data)
+  7
+  6     # Update layout to set y-axis range
+  5     fig.update_layout(
+  4         yaxis=dict(range=[-2, 2])  # Set the y-axis range from -2 to 2
+  3     )
+  2
+  1     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+  0     #return app.response_class(response=graphJSON, content_type='application/json')
+  1     return graphJSON
+  2
+  3 if __name__ == '__main__':
+  4     print('hello2')
+  5     app.run(debug=True)
+~
+~
+~
+~
+~
+~
+app.py                                                                                                                                                                                                                                                  119,30         Bot
+(base) [imh310@rescomp1 github]$ nvim app.py
